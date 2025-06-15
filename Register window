@@ -12,6 +12,11 @@ pygame.display.set_icon(icon)
 screen.blit(walpaper,(0,0))
 running = True
 
+font = pygame.font.SysFont("Sitka Text", 36)
+input_box = pygame.Rect(430, 210, 400, 40)
+text, active = '', False
+max_chars = 11
+
 tank = pygame.image.load("tank.png")
 tank = pygame.transform.scale(tank,(tank.get_width()//4,tank.get_height()//4))
 
@@ -62,11 +67,20 @@ def somethings():
     screen.blit(photo3,(490,490))
     screen.blit(photo4,(100,280))
     screen.blit(photo5,(600,300))
+    txt_surface = font.render(text, True, ("black"))
+    screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
+
     
 while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
             running = False
+        if e.type == pygame.MOUSEBUTTONDOWN:
+            active = input_box.collidepoint(e.pos)
+        if e.type == pygame.KEYDOWN and active:
+            if e.key == pygame.K_RETURN: print(text); text = ''
+            elif e.key == pygame.K_BACKSPACE: text = text[:-1]
+            elif len(text) < max_chars: text += e.unicode
     somethings()
     pygame.display.update()
     
